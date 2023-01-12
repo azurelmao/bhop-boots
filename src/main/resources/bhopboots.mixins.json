@@ -4,7 +4,8 @@
     "package": "turniplabs.bhopboots.mixin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "EntityLivingMixin"
+        "EntityLivingMixin",
+        "GuiIngameMixin"
     ],
     "client": [
     ],
