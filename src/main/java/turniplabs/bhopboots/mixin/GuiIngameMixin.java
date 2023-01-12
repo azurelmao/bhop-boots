@@ -7,7 +7,6 @@ import net.minecraft.src.Gamemode;
 import net.minecraft.src.GuiIngame;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.helper.Utils;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -18,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.bhopboots.BhopBoots;
 
 @Mixin(value = GuiIngame.class, remap = false)
-@Debug(export = true)
 public class GuiIngameMixin {
 
     @Shadow
