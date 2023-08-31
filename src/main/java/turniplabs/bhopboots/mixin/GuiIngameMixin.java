@@ -36,11 +36,11 @@ public class GuiIngameMixin {
     @Inject(method = "renderGameOverlay",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/client/option/BooleanOption;value:Ljava/lang/Object;"
+                    target = "Lnet/minecraft/client/option/GameSettings;showDebugScreen:Lnet/minecraft/client/option/BooleanOption;"
             ),
             slice = @Slice(
                     from = @At(value = "FIELD", target = "Lnet/minecraft/core/HitResult;side:Lnet/minecraft/core/util/helper/Side;"),
-                    to = @At(value = "FIELD", target = "Lnet/minecraft/client/option/BooleanOption;value:Ljava/lang/Object;")
+                    to = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameSettings;fpsInOverlay:Lnet/minecraft/client/option/BooleanOption;")
             )
     )
     private void bhopboots_captureLocals1(float partialTicks, boolean flag, int mouseX, int mouseY, CallbackInfo ci,  @Local(ordinal = 5) int tsp, @Local(ordinal = 6) int line, @Local(ordinal = 7) int lineHeight) {
