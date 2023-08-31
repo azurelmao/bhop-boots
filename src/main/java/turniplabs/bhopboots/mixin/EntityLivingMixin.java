@@ -1,9 +1,5 @@
 package turniplabs.bhopboots.mixin;
 
-//import net.minecraft.src.EntityLiving;
-//import net.minecraft.src.EntityPlayer;
-//import net.minecraft.src.ItemStack;
-//import net.minecraft.src.helper.Utils;
 import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.ItemStack;
