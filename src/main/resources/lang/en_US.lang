@@ -1444,5 +1444,5 @@ item.ammo.arrow.purple.desc=How did you get this?!
 item.label.name=Label
 item.label.desc=Allows you to name items and creatures. Can be dyed.
 
-item.bhopboots.bhopboots.name=Bhop Boots
-item.bhopboots.speedometer.name=Speedometer
+item.bhopboots.name=Bhop Boots
+item.speedometer.name=Speedometer

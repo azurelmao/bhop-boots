@@ -1,9 +1,8 @@
 package turniplabs.bhopboots.mixin;
 
-import net.minecraft.src.EntityLiving;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.helper.Utils;
+import net.minecraft.core.entity.EntityLiving;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.item.ItemStack;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,29 +30,20 @@ public class EntityLivingMixin {
 
     @ModifyVariable(method = "moveEntityWithHeading",
             at = @At(value = "STORE", ordinal = 0),
-            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/src/MathHelper;floor_double(D)I")),
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/core/util/helper/MathHelper;floor_double(D)I")),
             ordinal = 2
     )
     private float bhopboots_moveEntityWithHeading1(float friction) {
         EntityLiving entity = (EntityLiving) (Object) this;
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
-
-            if (player.noClip) {
-                return friction;
-            }
-
             ItemStack bootItem = player.inventory.armorItemInSlot(0);
-            if (bootItem == null) {
-                return friction;
-            }
-
-            if (bootItem.itemID != BhopBoots.bhopBoots.itemID) {
+            if (player.noPhysics || bootItem == null || bootItem.itemID != BhopBoots.bhopBoots.id) {
                 return friction;
             }
 
             if (!this.lastlastTickOnGround && this.lastTickOnGround) {
-                return 0.8f * 0.91f;
+                return 1.71f;
             }
         }
 
@@ -62,29 +52,20 @@ public class EntityLivingMixin {
 
     @ModifyVariable(method = "moveEntityWithHeading",
             at = @At(value = "STORE", ordinal = 0),
-            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/src/MathHelper;floor_double(D)I", ordinal = 3)),
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/core/util/helper/MathHelper;floor_double(D)I", ordinal = 3)),
             ordinal = 2
     )
     private float bhopboots_moveEntityWithHeading2(float friction) {
         EntityLiving entity = (EntityLiving) (Object) this;
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
-
-            if (player.noClip) {
-                return friction;
-            }
-
             ItemStack bootItem = player.inventory.armorItemInSlot(0);
-            if (bootItem == null) {
-                return friction;
-            }
-
-            if (bootItem.itemID != BhopBoots.bhopBoots.itemID) {
+            if (player.noPhysics || bootItem == null || bootItem.itemID != BhopBoots.bhopBoots.id) {
                 return friction;
             }
 
             if (!this.lastlastTickOnGround && this.lastTickOnGround) {
-                return 0.8f * 0.91f;
+                return 1.71f;
             }
         }
 
@@ -96,34 +77,26 @@ public class EntityLivingMixin {
         EntityLiving entity = (EntityLiving) (Object) this;
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
-            double deltaYaw = Math.toRadians(player.rotationYaw - this.oldYaw);
-            this.oldYaw = player.rotationYaw;
+            double deltaYaw = Math.toRadians(player.yRot - this.oldYaw);
+            this.oldYaw = player.yRot;
 
-            if (player.noClip) {
-                return;
-            }
-
-            if (player.onGround) {
+            if (player.noPhysics || player.onGround) {
                 return;
             }
 
             ItemStack bootItem = player.inventory.armorItemInSlot(0);
-            if (bootItem == null) {
+            if (bootItem == null || bootItem.itemID != BhopBoots.bhopBoots.id) {
                 return;
             }
 
-            if (bootItem.itemID != BhopBoots.bhopBoots.itemID) {
-                return;
-            }
-
-            double newX = Math.cos(deltaYaw) * player.motionX - Math.sin(deltaYaw) * player.motionZ;
-            double newZ = Math.sin(deltaYaw) * player.motionX + Math.cos(deltaYaw) * player.motionZ;
-            player.motionX = newX;
-            player.motionZ = newZ;
+            double newX = Math.cos(deltaYaw) * player.xd - Math.sin(deltaYaw) * player.zd;
+            double newZ = Math.sin(deltaYaw) * player.xd + Math.cos(deltaYaw) * player.zd;
+            player.xd = newX;
+            player.zd = newZ;
 
             float motion = 1.0f + Math.abs(this.moveStrafing) / 8.0f;
-            player.motionX *= motion;
-            player.motionZ *= motion;
+            player.xd *= motion;
+            player.zd *= motion;
         }
     }
 

@@ -2,11 +2,12 @@ package turniplabs.bhopboots.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Gamemode;
-import net.minecraft.src.GuiIngame;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.helper.Utils;
+
+import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.player.gamemode.Gamemode;
+import net.minecraft.core.util.helper.Utils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,7 +21,7 @@ import turniplabs.bhopboots.BhopBoots;
 public class GuiIngameMixin {
 
     @Shadow
-    private Minecraft mc;
+    protected Minecraft mc;
 
     @Unique
     private int tsp;
@@ -35,11 +36,11 @@ public class GuiIngameMixin {
     @Inject(method = "renderGameOverlay",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/src/GameSettings;showDebugScreen:Lnet/minecraft/src/option/BooleanOption;"
+                    target = "Lnet/minecraft/client/option/GameSettings;showDebugScreen:Lnet/minecraft/client/option/BooleanOption;"
             ),
             slice = @Slice(
-                    from = @At(value = "FIELD", target = "Lnet/minecraft/src/MovingObjectPosition;sideHit:I"),
-                    to = @At(value = "FIELD", target = "Lnet/minecraft/src/GameSettings;fpsInOverlay:Lnet/minecraft/src/option/BooleanOption;")
+                    from = @At(value = "FIELD", target = "Lnet/minecraft/core/HitResult;side:Lnet/minecraft/core/util/helper/Side;"),
+                    to = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameSettings;fpsInOverlay:Lnet/minecraft/client/option/BooleanOption;")
             )
     )
     private void bhopboots_captureLocals1(float partialTicks, boolean flag, int mouseX, int mouseY, CallbackInfo ci,  @Local(ordinal = 5) int tsp, @Local(ordinal = 6) int line, @Local(ordinal = 7) int lineHeight) {
@@ -52,11 +53,11 @@ public class GuiIngameMixin {
     @Inject(method = "renderGameOverlay",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/src/GuiIngame;drawString(Lnet/minecraft/src/FontRenderer;Ljava/lang/String;III)V"
+                    target = "Lnet/minecraft/client/gui/GuiIngame;drawString(Lnet/minecraft/client/render/FontRenderer;Ljava/lang/String;III)V"
             ),
             slice = @Slice(
-                    from = @At(value = "FIELD", target = "Lnet/minecraft/src/GameSettings;showDebugScreen:Lnet/minecraft/src/option/BooleanOption;"),
-                    to = @At(value = "FIELD", target = "Lnet/minecraft/src/GameSettings;armorDurabilityOverlay:Lnet/minecraft/src/option/BooleanOption;")
+                    from = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameSettings;showDebugScreen:Lnet/minecraft/client/option/BooleanOption;"),
+                    to = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameSettings;armorDurabilityOverlay:Lnet/minecraft/client/option/BooleanOption;")
             )
     )
     private void bhopboots_captureLocals2(float partialTicks, boolean flag, int mouseX, int mouseY, CallbackInfo ci,  @Local(ordinal = 5) int tsp, @Local(ordinal = 6) int line, @Local(ordinal = 7) int lineHeight) {
@@ -65,7 +66,7 @@ public class GuiIngameMixin {
         this.line = line;
     }
 
-    @Inject(method = "renderGameOverlay", at = @At(value = "FIELD", target = "Lnet/minecraft/src/GameSettings;armorDurabilityOverlay:Lnet/minecraft/src/option/BooleanOption;"))
+    @Inject(method = "renderGameOverlay", at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameSettings;armorDurabilityOverlay:Lnet/minecraft/client/option/BooleanOption;"))
     private void bhopboots_renderGameOverlay(float partialTicks, boolean flag, int mouseX, int mouseY, CallbackInfo ci) {
         if (this.mc.gameSettings.showDebugScreen.value) {
             return;
@@ -78,7 +79,7 @@ public class GuiIngameMixin {
             for (int i = 0; i < this.mc.thePlayer.inventory.getSizeInventory(); i++) {
 
                 ItemStack itemStack = this.mc.thePlayer.inventory.getStackInSlot(i);
-                if (itemStack != null && itemStack.itemID == BhopBoots.speedometer.itemID) {
+                if (itemStack != null && itemStack.itemID == BhopBoots.speedometer.id) {
                     renderSpeedometer = true;
                 }
             }
@@ -91,9 +92,9 @@ public class GuiIngameMixin {
     }
 
     private double calculateSpeed(EntityPlayer player) {
-        double x = (player.posX - player.lastTickPosX) * 20;
-        double y = (player.posY - player.lastTickPosY) * 20;
-        double z = (player.posZ - player.lastTickPosZ) * 20;
+        double x = (player.x - player.xOld) * 20;
+        double y = (player.y - player.yOld) * 20;
+        double z = (player.z - player.zOld) * 20;
         double speed = Math.sqrt(x*x + y*y + z*z);
         return Utils.floor100(speed);
     }
